@@ -19,10 +19,11 @@ no_index:
     - t
 requires:
   DateTime: 0
+  DateTime::Format::Strptime: 0
   List::Util: 0
   Moose: 0
   MooseX::ClassAttribute: 0
   MooseX::Types: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02
