@@ -2,7 +2,16 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More;
+
+BEGIN {
+  if ($ENV{RELEASE_TESTING}) {
+    Test::More::plan(tests => 3);
+  }
+  else {
+    Test::More::plan(skip_all => 'these tests are for release candidate testing');
+  }
+}
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;

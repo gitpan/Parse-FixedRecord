@@ -1,6 +1,5 @@
 package Parse::FixedRecord::Column;
 use Moose::Role;
-use MooseX::Types::Moose      qw(Int);
 use Moose::Util::TypeConstraints;
 
 has width => (

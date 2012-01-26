@@ -1,5 +1,4 @@
 Changes
-ignore.txt
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
@@ -13,16 +12,19 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Parse/FixedRecord.pm
 lib/Parse/FixedRecord/Column.pm
+lib/Parse/FixedRecord/Meta/Role/Class.pm
 lib/Parse/FixedRecord/Row.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 META.yml
 README
 t/00-load.t
 t/01-basic.t
 t/02-error.t
 t/03-table.t
+t/04-multiple.t
 t/boilerplate.t
 t/lib/Row/Test.pm
+t/lib/Row/Test2.pm
 t/pod-coverage.t
 t/pod.t

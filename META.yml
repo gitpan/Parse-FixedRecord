@@ -1,13 +1,14 @@
 ---
 abstract: 'object oriented parser for fixed width records'
 author:
+  - 'and LICENSE'
   - osfameron
 build_requires:
   ExtUtils::MakeMaker: 6.42
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.91'
+generated_by: 'Module::Install version 1.01'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -19,11 +20,10 @@ no_index:
     - t
 requires:
   DateTime: 0
+  DateTime::Format::Duration: 0
   DateTime::Format::Strptime: 0
   List::Util: 0
-  Moose: 0
-  MooseX::ClassAttribute: 0
-  MooseX::Types: 0
+  Moose: 1.15
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.02
+version: 0.03

@@ -35,29 +35,15 @@ parsers.
 
 =cut
 
-use Parse::FixedRecord;
+use Moose;
 use Parse::FixedRecord::Column;
 
-use MooseX::ClassAttribute;
 use Moose::Util::TypeConstraints;
 use DateTime::Format::Strptime;
 use DateTime::Format::Duration;
 use List::Util qw/max/;
 
 use overload q("") => sub { $_[0]->output };
-
-subtype 'My::MMA' =>
-    as class_type('Moose::Meta::Attribute');
-
-class_has fields => (
-    metaclass => 'Collection::Array',
-    default   => sub { [] },
-    is        => 'rw',
-    isa       => 'ArrayRef[Str|My::MMA]',
-    provides  => {
-        push => 'add_field',
-        },
-    );
 
 subtype 'Date' =>
     as class_type('DateTime');
@@ -87,10 +73,9 @@ coerce 'Duration'
             };
 
 sub parse {
-    my ($self, $string) = @_;
-    my $class = ref $self || $self;
+    my ($class, $string) = @_;
 
-    my @ranges = @{ $class->fields };
+    my @ranges = @{ $class->meta->fields };
 
     my $pos = 0;
     my %data = map {
@@ -116,7 +101,7 @@ sub parse {
 sub output {
     my ($self) = @_;
 
-    my @ranges = @{ $self->fields };
+    my @ranges = @{ $self->meta->fields };
 
     my $string = join '', map {
         if (ref) {

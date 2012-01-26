@@ -2,6 +2,12 @@ use strict;
 use warnings;
 use Test::More;
 
+BEGIN {
+  unless ($ENV{RELEASE_TESTING}) {
+    Test::More::plan(skip_all => 'these tests are for release candidate testing');
+  }
+}
+
 # Ensure a recent version of Test::Pod::Coverage
 my $min_tpc = 1.08;
 eval "use Test::Pod::Coverage $min_tpc";
@@ -15,4 +21,4 @@ eval "use Pod::Coverage $min_pc";
 plan skip_all => "Pod::Coverage $min_pc required for testing POD coverage"
     if $@;
 
-all_pod_coverage_ok();
+all_pod_coverage_ok({ also_private => [qr/^init_meta$/]});

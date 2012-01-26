@@ -15,7 +15,6 @@ To create a parser:
 
   package My::Parser;
   use Parse::FixedRecord; # imports strict and warnings
-  extends 'Parse::FixedRecord::Row';
 
   column first_name => width => 4, isa => 'Str';
   pic ' ';
@@ -51,7 +50,7 @@ you out of the box.
 
 =head2 Definition
 
-To define the class, simply apply C<column> and C<has> for each field, in
+To define the class, simply apply C<column> and C<pic> for each field, in
 the order they appear in your input file.  They are defined as follows:
 
 =head3 C<column>
@@ -84,7 +83,7 @@ C<' | '>.
 
 =head3 C<$parser-E<gt>parse>
 
-  my $obj = $parser->parse( $line );
+  my $obj = My::Parser->parse( $line );
 
 If the C<column> and C<pic> definitions can be matched, including any
 type constraints and object inflations, then a Moose object is returned.
@@ -98,35 +97,52 @@ use Parse::FixedRecord::Column;
 use Moose::Exporter;
 use Moose::Util::TypeConstraints;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 Moose::Exporter->setup_import_methods(
-   with_caller => ['column', 'pic'],
-   also        => ['Moose' ],
+    with_meta => ['column', 'pic'],
+    also      => ['Moose'],
 );
 
+sub init_meta {
+    shift;
+    my %args = @_;
+
+    Moose->init_meta(%args);
+
+    Moose::Util::MetaRole::apply_metaroles(
+        for => $args{for_class},
+        class_metaroles => {
+            class => ['Parse::FixedRecord::Meta::Role::Class'],
+        },
+    );
+
+    my $meta = Class::MOP::class_of($args{for_class});
+    $meta->superclasses('Parse::FixedRecord::Row');
+}
+
 sub pic {
-    my $caller = shift;
+    my $meta = shift;
     my $pic = shift;
 
-    $caller->add_field($pic);
+    $meta->add_field($pic);
 }
 
 sub column {
-    my $caller = shift;
+    my $meta = shift;
     my ($name, %pars) = @_;
     $pars{isa} ||= 'Str';
     $pars{coerce}++ if do {
         my $t = find_type_constraint($pars{isa});
         $t && $t->has_coercion;
         };
-    my $attr = $caller->meta->add_attribute(
+    my $attr = $meta->add_attribute(
         $name => (
             traits => ['Column'],
             is     => 'ro',
             %pars,
             ));
-    $caller->add_field($attr);
+    $meta->add_field($attr);
 }
 
 =head1 AUTHOR and LICENSE
