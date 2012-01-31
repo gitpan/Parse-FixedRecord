@@ -1,5 +1,8 @@
 Revision history for Parse-FixedRecord
 
+0.04    2012 Jan 27
+        Add proper test dependencies
+
 0.03    2012 Jan 26
         Multiple parsers can now exist in the same process
         Inheriting from Parse::FixedRecord::Row is no longer required

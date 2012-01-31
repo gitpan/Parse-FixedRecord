@@ -11,6 +11,9 @@ requires 'DateTime::Format::Strptime';
 requires 'DateTime::Format::Duration';
 requires 'List::Util';
 
+test_requires 'Test::More';
+test_requires 'Test::Fatal';
+
 license     'perl';
 author      'osfameron';
 

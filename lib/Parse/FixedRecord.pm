@@ -97,7 +97,7 @@ use Parse::FixedRecord::Column;
 use Moose::Exporter;
 use Moose::Util::TypeConstraints;
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 Moose::Exporter->setup_import_methods(
     with_meta => ['column', 'pic'],
