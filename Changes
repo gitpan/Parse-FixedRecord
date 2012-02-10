@@ -1,5 +1,8 @@
 Revision history for Parse-FixedRecord
 
+0.05    2012 Feb 09
+        Make the error messages more informative
+
 0.04    2012 Jan 27
         Add proper test dependencies
 

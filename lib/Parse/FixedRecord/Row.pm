@@ -26,7 +26,7 @@ on each individual parser type having well behaved String overloading!
 
 =head2 Types
 
-::Row declares C<Duration> and C<DateTime> types for you to use in your
+::Row declares C<Duration> and C<Date> types for you to use in your
 parsers.
 
 =head1 AUTHOR and LICENSE
@@ -77,6 +77,12 @@ sub parse {
 
     my @ranges = @{ $class->meta->fields };
 
+    my $length = length($string);
+    my $required_length = $class->meta->total_length;
+    die "Invalid parse for class $class: input string has length $length, "
+      . "but must have length $required_length"
+        if $length < $required_length;
+
     my $pos = 0;
     my %data = map {
         if (ref) {
@@ -89,7 +95,9 @@ sub parse {
         } else {
             # it's a string
             my $width = length;
-            substr($string, $pos, $width) eq $_ or die "Invalid parse on picture '$_' ($pos)";
+            my $found = substr($string, $pos, $width);
+            die "Invalid parse on picture '$_' (got '$found' at position $pos)"
+                unless $found eq $_;
             $pos += $width;
             ();
         }
