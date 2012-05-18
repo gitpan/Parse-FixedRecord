@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict; use warnings;
-use Test::More tests => 3;
+use Test::More;
 use Test::Fatal;
 use FindBin '$Bin';
 
@@ -32,3 +32,5 @@ use Row::Test;
         my $obj = Row::Test->parse( $test_data );
         }, qr/\QInvalid parse on picture ' | ' (got ' + ' at position 13)/);
 }
+
+done_testing;

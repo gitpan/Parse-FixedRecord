@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict; use warnings;
-use Test::More tests => 17;
+use Test::More;
 use FindBin '$Bin';
 
 use lib "$Bin/lib";
@@ -57,3 +57,5 @@ use Row::Test2;
     is $obj->foo, '12345';
     is $obj->bar, '54321';
 }
+
+done_testing;

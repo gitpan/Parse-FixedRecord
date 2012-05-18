@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict; use warnings;
-use Test::More tests => 1;
+use Test::More;
 use FindBin '$Bin';
 
 use lib "$Bin/lib";
@@ -21,6 +21,8 @@ my @long = grep {
 is_deeply [ map $_->last, @long ],
           [ 'Stone ', 'Clown ' ],
           "Correct data";
+
+done_testing;
 
 __DATA__
 Fred J Bloggs | 2009-12-17 | 01:00

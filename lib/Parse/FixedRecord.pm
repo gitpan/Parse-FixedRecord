@@ -1,8 +1,98 @@
 package Parse::FixedRecord;
+BEGIN {
+  $Parse::FixedRecord::AUTHORITY = 'cpan:OSFAMERON';
+}
+{
+  $Parse::FixedRecord::VERSION = '0.06';
+}
+# ABSTRACT: object oriented parser for fixed width records
+
+
+use Moose 1.15 ();
+use Parse::FixedRecord::Column;
+use Moose::Exporter;
+use Moose::Util::TypeConstraints;
+
+Moose::Exporter->setup_import_methods(
+    with_meta => ['column', 'pic', 'ignore'],
+    also      => ['Moose'],
+);
+
+sub init_meta {
+    shift;
+    my %args = @_;
+
+    Moose->init_meta(%args);
+
+    Moose::Util::MetaRole::apply_metaroles(
+        for => $args{for_class},
+        class_metaroles => {
+            class => ['Parse::FixedRecord::Meta::Role::Class'],
+        },
+    );
+
+    my $meta = Class::MOP::class_of($args{for_class});
+    $meta->superclasses('Parse::FixedRecord::Row');
+}
+
+sub pic {
+    my $meta = shift;
+    my $pic = shift;
+
+    $meta->add_field($pic);
+}
+
+sub column {
+    my $meta = shift;
+    my ($name, %pars) = @_;
+    $pars{isa} ||= 'Str';
+    $pars{coerce}++ if do {
+        my $t = find_type_constraint($pars{isa});
+        $t && $t->has_coercion;
+        };
+    my $attr = $meta->add_attribute(
+        $name => (
+            traits => ['Column'],
+            is     => 'ro',
+            %pars,
+            ));
+    $meta->add_field($attr);
+}
+
+my $anon_idx = 0;
+
+sub ignore {
+    my $meta = shift;
+    my %pars = (@_ % 2 ? (width => @_) : @_);
+    $pars{isa} ||= 'Str';
+    $pars{coerce}++ if do {
+        my $t = find_type_constraint($pars{isa});
+        $t && $t->has_coercion;
+        };
+    my $name = "Parse-FixedRecord-ANON-$anon_idx";
+    $anon_idx++;
+    my $attr = $meta->add_attribute(
+        $name => (
+            traits => ['Column'],
+            is     => 'bare',
+            %pars,
+            ));
+    $meta->add_field($attr);
+}
+
+
+1;
+
+__END__
+=pod
 
 =head1 NAME
 
 Parse::FixedRecord - object oriented parser for fixed width records
+
+=head1 VERSION
+
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -79,6 +169,15 @@ and in any case, there is no requirement to use it.
 i.e. the record consists of two 5-char wide fields, split by the literal 
 C<' | '>.
 
+=head3 C<ignore>
+
+Like C<pic>, but the actual contents of the delimiter are ignored. The
+argument is the field width.
+
+  column foo => width => 5;
+  ignore 3;
+  column bar => width => 5;
+
 =head2 Parsing
 
 =head3 C<$parser-E<gt>parse>
@@ -90,70 +189,18 @@ type constraints and object inflations, then a Moose object is returned.
 
 Otherwise, an error is thrown, usually by the Moose type constraint failure.
 
-=cut
+=for Pod::Coverage init_meta
 
-use Moose ();
-use Parse::FixedRecord::Column;
-use Moose::Exporter;
-use Moose::Util::TypeConstraints;
+=head1 AUTHOR
 
-our $VERSION = 0.05;
+osfameron <osfameron@cpan.org>
 
-Moose::Exporter->setup_import_methods(
-    with_meta => ['column', 'pic'],
-    also      => ['Moose'],
-);
+=head1 COPYRIGHT AND LICENSE
 
-sub init_meta {
-    shift;
-    my %args = @_;
+This software is copyright (c) 2012 by osfameron.
 
-    Moose->init_meta(%args);
-
-    Moose::Util::MetaRole::apply_metaroles(
-        for => $args{for_class},
-        class_metaroles => {
-            class => ['Parse::FixedRecord::Meta::Role::Class'],
-        },
-    );
-
-    my $meta = Class::MOP::class_of($args{for_class});
-    $meta->superclasses('Parse::FixedRecord::Row');
-}
-
-sub pic {
-    my $meta = shift;
-    my $pic = shift;
-
-    $meta->add_field($pic);
-}
-
-sub column {
-    my $meta = shift;
-    my ($name, %pars) = @_;
-    $pars{isa} ||= 'Str';
-    $pars{coerce}++ if do {
-        my $t = find_type_constraint($pars{isa});
-        $t && $t->has_coercion;
-        };
-    my $attr = $meta->add_attribute(
-        $name => (
-            traits => ['Column'],
-            is     => 'ro',
-            %pars,
-            ));
-    $meta->add_field($attr);
-}
-
-=head1 AUTHOR and LICENSE
-
-   (C)  osfameron 2009, <osfameron@cpan.org>
-
-For support, try emailing me, or grabbing me on irc #london.pm or #moose
-on irc.perl.org
-
-This module is released under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-1;

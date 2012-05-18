@@ -1,39 +1,12 @@
 package Parse::FixedRecord::Row;
+BEGIN {
+  $Parse::FixedRecord::Row::AUTHORITY = 'cpan:OSFAMERON';
+}
+{
+  $Parse::FixedRecord::Row::VERSION = '0.06';
+}
+# ABSTRACT: Row class for Parse::FixedRecord
 
-=head1 NAME
-
-Parse::FixedRecord::Row - Row class for Parse::FixedRecord
-
-=head1 DESCRIPTION
-
-This is the base class for fixed record parsers.
-Provides the C<parse> implementation.
-
-=head2 Methods
-
-=head3 C<parse>
-
-See L<Parse::FixedRecord> for usage;
-
-=head3 C<output>
-
-Provides stringified output.  This is overloaded, so you can just:
-
-    print $obj;
-
-to get an output (in the same format as declared/parsed).  This depends
-on each individual parser type having well behaved String overloading!
-
-=head2 Types
-
-::Row declares C<Duration> and C<Date> types for you to use in your
-parsers.
-
-=head1 AUTHOR and LICENSE
-
-    osfameron@cpan.org - see Parse::FixedRecord for full details
-
-=cut
 
 use Moose;
 use Parse::FixedRecord::Column;
@@ -122,6 +95,12 @@ sub output {
 }
 
 package DateTime::Duration::Formatted;
+BEGIN {
+  $DateTime::Duration::Formatted::AUTHORITY = 'cpan:OSFAMERON';
+}
+{
+  $DateTime::Duration::Formatted::VERSION = '0.06';
+}
 our @ISA = 'DateTime::Duration';
 
 use overload q("") => sub {
@@ -131,3 +110,53 @@ use overload q("") => sub {
     };
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Parse::FixedRecord::Row - Row class for Parse::FixedRecord
+
+=head1 VERSION
+
+version 0.06
+
+=head1 DESCRIPTION
+
+This is the base class for fixed record parsers.
+Provides the C<parse> implementation.
+
+=head2 Methods
+
+=head3 C<parse>
+
+See L<Parse::FixedRecord> for usage;
+
+=head3 C<output>
+
+Provides stringified output.  This is overloaded, so you can just:
+
+    print $obj;
+
+to get an output (in the same format as declared/parsed).  This depends
+on each individual parser type having well behaved String overloading!
+
+=head2 Types
+
+::Row declares C<Duration> and C<Date> types for you to use in your
+parsers.
+
+=head1 AUTHOR
+
+osfameron <osfameron@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by osfameron.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
